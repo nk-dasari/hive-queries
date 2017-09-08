@@ -11,5 +11,8 @@ writing to dir
 ---------------
 INSERT OVERWRITE [LOCAL] DIRECTORY directory1 [ROW FORMAT row_format] [STORED AS file_format]SELECT select_statment FROM from_statment.
 
-
+external partitioning
+----------------------
+CREATE EXTERNAL TABLE customer_external(id STRING, name STRING, gender STRING, state STRING) PARTITIONED BY (country STRING);
+ALTER TABLE customer_external ADD PARTITION(country='UK') LOCATION '/user/hive/warehouse/customer/country=UK'
 
