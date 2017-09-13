@@ -16,3 +16,51 @@ external partitioning
 CREATE EXTERNAL TABLE customer_external(id STRING, name STRING, gender STRING, state STRING) PARTITIONED BY (country STRING);
 ALTER TABLE customer_external ADD PARTITION(country='UK') LOCATION '/user/hive/warehouse/customer/country=UK'
 
+Bucketing
+---------
+
+set hive.enforce.bucketing=true;
+
+CREATE [EXTERNAL] TABLE [db_name.]table_name
+    [(col_name data_type [COMMENT col_comment], ...)]
+    CLUSTERED BY (col_name data_type [COMMENT col_comment], ...)
+INTO N BUCKETS;
+
+Joins
+-----
+
+SELECT a.* FROM Sales a JOIN Sales_orc b ON a.id = b.id;
+SELECT a.fname, b.lname, c.address FROM Sales a JOIN Sales_orc b ON a.id = b.id join Sales_info c ON c.id = b.id;
+SELECT a.fname, b.lname, c.address FROM Sales a JOIN Sales_orc b ON a.id = b.id join Sales_info c ON c.address = b.address;
+
+SELECT * FROM Sales a LEFT OUTER JOIN Sales_orc b ON a.id = b.id;
+
+SELECT * FROM Sales a RIGHT OUTER JOIN Sales_orc b ON a.id = b.id;
+
+SELECT * FROM Sales a FULL OUTER JOIN Sales_orc b ON a.id = b.id;
+
+SELECT * FROM Sales a LEFT OUTER JOIN Sales_orc b ON a.id = b.id WHERE a.fname = 'John';
+
+SELECT * FROM Sales a RIGHT OUTER JOIN Sales_orc b ON a.id = b.id WHERE a.fname = 'John';
+
+Left Semi Join
+---------------
+Used in place of IN/EXISTS
+In the left semi join, the right-hand side table can only be used in the join clause but not in the WHERE or the SELECT clause
+
+SELECT a.* FROM Sales a LEFT SEMI JOIN Sales_orc b ON a.id = b.id;
+
+SELECT a.*, b.* FROM Sales a LEFT SEMI JOIN Sales_orc b ON a.id = b.id;
+
+SELECT a.* FROM Sales a LEFT SEMI JOIN Sales_orc b ON a.id = b.id WHERE b.id = 1;
+
+Mapside Join
+-------------
+
+Old way:/*+ MAPJOIN(<table_name>)*/
+ set hive.auto.convert.join=true;
+ 
+ SELECT /*+ MAPJOIN(Sales_orc)*/ a.fname, b.lname FROM Sales a JOIN Sales_orc b ON a.id = b.id;
+SELECT a.* FROM Sales a JOIN Sales_orc b ON a.id = b.id and a.fname = b.fname;
+
+
