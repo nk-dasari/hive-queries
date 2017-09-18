@@ -63,4 +63,10 @@ Old way:/*+ MAPJOIN(<table_name>)*/
  SELECT /*+ MAPJOIN(Sales_orc)*/ a.fname, b.lname FROM Sales a JOIN Sales_orc b ON a.id = b.id;
 SELECT a.* FROM Sales a JOIN Sales_orc b ON a.id = b.id and a.fname = b.fname;
 
+Serde
+-----
+
+CREATE EXTERNAL TABLE empljson (empid int,empname string,emploc string)
+ROW FORMAT SERDE "org.apache.hadoop.hive.contrib.serde2.JsonSerde"
+WITH SERDEPROPERTIES ("empid"="$.empid","empname"="$.empname","emploc"="$.emploc") LOCATION '/user/cloudera/serdedata/';
 
