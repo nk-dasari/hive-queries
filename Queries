@@ -67,6 +67,19 @@ Serde
 -----
 
 CREATE EXTERNAL TABLE empljson (empid int,empname string,emploc string)
-ROW FORMAT SERDE "org.apache.hadoop.hive.contrib.serde2.JsonSerde"
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
 WITH SERDEPROPERTIES ("empid"="$.empid","empname"="$.empname","emploc"="$.emploc") LOCATION '/user/cloudera/serdedata/';
+
+UDF
+----
+get_json_object()
+
+CustomUDF
+---------
+1. Create a class by extending UDF and override evaluate() function. Sample is below
+    https://github.com/nk-dasari/CustomUDF/blob/master/src/main/java/com/hadoop/training/Lower.java
+2. In hive prompt do the following
+    hive> ADD JAR /path/to/CustomUDF-0.0.1-SNAPSHOT.jar;
+    hive> create temporary function lwr as 'com.hadoop.training.Lower';
+    hive> select lwr(colname) from tablename limit 10;
 
