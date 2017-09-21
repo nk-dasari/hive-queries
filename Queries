@@ -65,6 +65,7 @@ SELECT a.* FROM Sales a JOIN Sales_orc b ON a.id = b.id and a.fname = b.fname;
 
 Serde
 -----
+Download jar from http://www.congiu.net/hive-json-serde/1.3.8/cdh5/
 
 CREATE EXTERNAL TABLE empljson (empid int,empname string,emploc string)
 ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
@@ -72,7 +73,13 @@ WITH SERDEPROPERTIES ("empid"="$.empid","empname"="$.empname","emploc"="$.emploc
 
 UDF
 ----
+CREATE EXTERNAL TABLE sampleTbl(empdet String,dept string)
+    > ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE 
+    > LOCATION '/user/cloudera/serdedata/sample1';
+
 get_json_object()
+
+select get_json_object(sampleTbl.empdet,"$.empid") as empid,get_json_object(sampleTbl.empdet,"$.empname") as empname ,dept from sampleTbl;
 
 CustomUDF
 ---------
